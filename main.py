@@ -30,17 +30,15 @@ def not_found(error):
     return make_response(flask.jsonify({'error': '404'}), 404)
 
 
-@app.route('/<title>')
-@app.route('/index/<title>')
-def index(title):
+@app.route('/')
+def index():
     url_style = url_for('static', filename='styles/style3.css')
-    return render_template('base.html', title=title, style=url_style)
+    return render_template('index.html', title="Главная", style=url_style)
 
 
 @app.route('/cpu')
 def works_list():
     d = []
-    headers = ['title', 'price', 'rating', 'id']
     for cpu in db_sess.query(CPU).all():
         d.append({'title': cpu.title,
                   'price': cpu.price,
@@ -48,7 +46,7 @@ def works_list():
         d[-1]["id"] = cpu.id
     style = url_for('static', filename='/styles/style3.css')
     return render_template('list.html', style=style, title='Процессоры',
-                           dictionary=d, keys=headers)
+                           dictionary=d)
 
 
 class DBLoginForm(FlaskForm):

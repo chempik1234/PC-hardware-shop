@@ -1,41 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Works log</h2>
-    <a class="btn btn-info" href="/departments">Департаменты</a>
-    {% if current_user.is_authenticated %}
-        <a class="btn btn-info" href="/add_job">Добавить работу</a>
-    {% endif %}
+    <h1 style="color: white;">Процессоры</h1>
     {% for item in dictionary %}
-        <div><h3>Action # {{loop.index}}</h3>
-        <table>
-            <tr>
-                {% for key in keys %}
-                    <th style="background-color:gray;">{{key}}</th>
-                {% endfor %}
-            </tr>
-            <tr>
-                {% for key in keys %}
-                    {% if key == "Is finished" %}
-                        {% if item[key] == "Is finished" %}
-                            <td style="background-color:green;">{{item[key]}}</td>
-                        {% else %}
-                            <td style="background-color:red;">{{item[key]}}</td>
-                        {% endif %}
-                    {% else %}
-                        <td style="background-color:aliceblue;">{{item[key]}}</td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-        </table></div>
-        {% if current_user.is_authenticated and (current_user.id == 1 or current_user.id == item["team_leader"]) %}
-            <div>
-                <a href="/edit_job/{{ item['id'] }}" class="btn btn-warning">
-                    Изменить
-                </a>
-                <a href="/delete_job/{{ item['id'] }}" class="btn btn-danger">
-                    Удалить
-                </a>
-            </div>
-        {% endif %}
+        <div class="product">
+            <h1>{{item["title"]}}</h1>
+            <h2 style="color: gold;">Оценка: {% if item["rating"] == 0.0 %}ещё нет оценок{% else %}{{item["rating"]}}{% endif %}</h2>
+            <table width="100%">
+                <tr>
+                    <th><a href="product/{{item['title']}}"><img src='static/img/cpu/{{item["title"]}}.jpg'></a></th>
+                    <th width="20%"><h2>{{item['price']}} руб.</h2></th>
+                </tr>
+            </table>
+        </div>
     {% endfor %}
 {% endblock %}
