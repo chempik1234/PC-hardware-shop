@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <script type="text/javascript" header="{{header}}">
+        header = document.currentScript.getAttribute('header');
+        document.write(header);
+    </script>
+    <form action="" method="post" novalidate xmlns="">
+        <div>
+            {{ form.csrf_token }}
+        </div>
+        {% for field in form if field.name != 'csrf_token' and field.name != 'submit' %}
+            <div>
+                {{ field.label() }}
+                {{ field() }}
+                {% for error in field.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    </form>
+{% endblock %}
