@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="product">
+        <h1>{{title}}</h1>
+        <table width="100%">
+            <tr>
+                <td>
+                    <img src="/static/img/{{product_type}}/{{title}}.jpg">
+                </td>
+                <td>
+                    <h3 style="color: orange;">Оценка: {% if item["rating"] == 0.0 %}ещё нет оценок{% else %}{{item["rating"]}}{% endif %}</h3>
+                </td>
+            </tr>
+        </table>
+        <h2>Описание:</h2>
+        <p style="color: gray;">{{item['Описание']}}</p>
+        <h2>Характеристики:</h2>
+        <table class="main_table">
+            {% for key in keys %}
+            {% if key != "Цена" and key != "Оценка" and key != "Описание" %}
+            <tr>
+                <td style="color: gray;"><h3>{{key}}</h3></td>
+                <td><h3>{{item[key]}}</h3></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

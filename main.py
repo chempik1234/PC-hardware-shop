@@ -25,6 +25,18 @@ login_manager.init_app(app)
 levels = {}
 
 
+def net_yest(a):
+    return 'есть' if a else 'нет'
+
+
+def human_read_format(size):
+    l, k = ['Б', 'КБ', 'МБ', 'ГБ'], 0
+    while size >= 1024:
+        k += 1
+        size /= 1024
+    return str(round(size)) + l[k]
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(flask.jsonify({'error': '404'}), 404)
@@ -47,6 +59,60 @@ def works_list():
     style = url_for('static', filename='/styles/style3.css')
     return render_template('list.html', style=style, title='Процессоры',
                            dictionary=d)
+
+
+@app.route('/product/<title>')
+def product(title):
+    style = url_for('static', filename='/styles/style3.css')
+    cpu = db_sess.query(CPU).filter(CPU.title == title).first()
+    d, product_type = None, None
+    if cpu:
+        d = {
+            'Гарантия': str(cpu.warranty) + ' мес.',
+            'Страна выпуска': cpu.country,
+            'Модель': cpu.title,
+            'Поколение': cpu.generation,
+            'Год выпуска': cpu.year,
+            'Сокет': cpu.socket,
+            'Система охлаждения': net_yest(cpu.has_cooling),
+            'Термоинтерфейс': net_yest(cpu.term_interface),
+            'Количество ядер': cpu.cores,
+            'Максимальное количество потоков': cpu.threads,
+            'Техпроцесс': cpu.tech_process,
+            'Ядро': cpu.core,
+            'Кэш L1 (инструкции)': human_read_format(cpu.cash_l1_instructions_bits),
+            'Кэш L1 (данные)': human_read_format(cpu.cash_l1_data_bits),
+            'Кэш L2': human_read_format(cpu.cash_l2_bits),
+            'Кэш L3': human_read_format(cpu.cash_l3_bits),
+            'Частота': cpu.base_freq,
+            'Макс. частота': cpu.max_freq,
+            'Свободный множитель': cpu.free_mult,
+            'Тип памяти': cpu.memory,
+            'Макс. объём памяти': cpu.max_mem_bits,
+            'Каналы': cpu.channels,
+            'минимальная частота ОЗУ': cpu.min_RAM_freq,
+            'максимальная частота ОЗУ': cpu.max_RAM_freq,
+            'ECC': net_yest(cpu.ECC),
+            'TDP': cpu.TDP,
+            'Настраиваемая величина TDP': net_yest(cpu.custom_TDP),
+            'Максимальная температура': cpu.max_temp,
+            'Встроенное графическое ядро': net_yest(cpu.has_graphics),
+            'PCI': cpu.PCI,
+            'Число линий PCI Express': cpu.PCI_amount,
+            'Пропускная способность шины': cpu.bandwidth,
+            'Поддержка 64-битного набора команд': cpu.support_x64,
+            'Многопоточность': net_yest(cpu.multi_thread),
+            'Технология повышения частоты процессора': cpu.add_freq_tech,
+            'Технология энергосбережения': cpu.energy_save_tech,
+            'Описание': cpu.description,
+            'Цена': cpu.price,
+            'Оценка': cpu.rating,
+        }
+        product_type = "cpu"
+    if not d:
+        return abort(404)
+    return render_template('product.html', style=style, title=title,
+                           item=d, product_type=product_type, keys=d.keys())
 
 
 class DBLoginForm(FlaskForm):
@@ -172,7 +238,7 @@ def db_main():
     multi_thread = {'AMD FX-4300': False}
     add_freq_tech = {'AMD FX-4300': 'No'}
     energy_save_tech = {'AMD FX-4300': 'PowerNow!'}
-    description = {'AMD FX-4300': ''''Четырехъядерный «народный процессор» AMD FX-4300 OEM, способный работать в четыре потока, позволяет насладиться преимуществами параллельных вычислений в полном объеме. Представитель линейки Vishera AMD FX-4300 OEM гармонично впишется в вашу игровую систему.
+    description = {'AMD FX-4300': '''Четырехъядерный «народный процессор» AMD FX-4300 OEM, способный работать в четыре потока, позволяет насладиться преимуществами параллельных вычислений в полном объеме. Представитель линейки Vishera AMD FX-4300 OEM гармонично впишется в вашу игровую систему.
 3.8 ГГц — номинальная тактовая частота модели, однако чип из серии Black Edition AMD FX-4300 OEM, благодаря открытому множителю и технологии AMD Turbo Core 3.0, способен работать и на частоте 4 ГГц.
 Общий объем кэша 8 МБ гарантирует работу процессора AMD FX-4300 OEM на полную мощность, Socket AM3+ делает его совместимым с большинством системных плат, а двухканальный контроллер ОЗУ добавляет поддержку памяти до 1866 МГц частотой и до 128 ГБ объемом.
 Вы также останетесь удовлетворены широкой поддержкой наборов команд и технологий — в процессор AMD FX-4300 OEM внедрена поддержка виртуализации, технология экономии энергии, широкий спектр наборов инструкций, в частности, SSE вплоть до 4.2, FMA3, EVP, MMX, XOP и другие.'''}
