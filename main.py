@@ -88,7 +88,7 @@ def product(title):
             'Макс. частота': cpu.max_freq,
             'Свободный множитель': cpu.free_mult,
             'Тип памяти': cpu.memory,
-            'Макс. объём памяти': cpu.max_mem_bits,
+            'Макс. объём памяти': human_read_format(cpu.max_mem_bits),
             'Каналы': cpu.channels,
             'минимальная частота ОЗУ': cpu.min_RAM_freq,
             'максимальная частота ОЗУ': cpu.max_RAM_freq,
@@ -116,11 +116,11 @@ def product(title):
 
 
 class DBLoginForm(FlaskForm):
-    surname = StringField("Surname", validators=[DataRequired()])
-    name = StringField("Name", validators=[DataRequired()])
-    email = EmailField("Login / Email", validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    repeat_password = PasswordField('Repeat password',
+    surname = StringField("Фамилия", validators=[DataRequired()])
+    name = StringField("Имя", validators=[DataRequired()])
+    email = EmailField("Логин / Почта", validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    repeat_password = PasswordField('Повторите пароль',
                                     validators=[DataRequired(),
                                                 EqualTo('password', message='Passwords must match')])
     remember_me = BooleanField('Запомнить меня')
@@ -148,7 +148,7 @@ def register():
         db_sess.commit()
         return redirect('/success')
     return render_template('login.html', style=url_style,
-                           header='<h2>Register form</h2>',
+                           header='<h2 style="color: white;">Регистрация</h2>',
                            title='Авторизация', form=form)
 
 

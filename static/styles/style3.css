@@ -17,3 +17,20 @@ body {
     width: 100%;
     table-layout: fixed;
 }
+
+nav .dropdown-content {
+  display: none;
+  position: absolute;
+  background: gray;
+  width: 125%;
+  border-radius: 5px;
+  border: 2px solid black;
+}
+nav .dropdown-content a {
+  color: black;
+  background: white;
+  border-radius: 5px;
+}
+nav .dropdown:hover > .dropdown-content {
+  display: block;
+}
