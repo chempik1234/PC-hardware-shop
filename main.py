@@ -30,6 +30,7 @@ levels = {}
 def net_yest(a):
     return 'есть' if a else 'нет'
 
+
 def net_da(a):
     return 'да' if a else "нет"
 
@@ -192,6 +193,15 @@ def leave_rate(pr_type, title, rate):
         item.rating += int(rate)
     db_sess.commit()
     return redirect(f'/product/{pr_type}/{title}')
+
+
+@app.route('/profile')
+def profile():
+    style = url_for('static', filename='/styles/style3.css')
+    if current_user.is_authenticated:
+        return render_template('profile.html', style=style, title="Профиль")
+    else:
+        return redirect('/login')
 
 
 class DBLoginForm(FlaskForm):

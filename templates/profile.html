@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="product">
+        <h1>Профиль</h1>
+        <table style="background: #777777; text-align-center; color: white;" class="table_main table_td_space" width="100%">
+            <thead>
+                <tr style="border: 1px dotted #999;">
+                    <th><h1>Информация</h1></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="td_border_white"><h3>Фамилия</h3></td><td class="td_border_white"><h3>{{current_user.surname}}</h3></td></tr>
+                <tr><td class="td_border_white"><h3>Имя</h3></td><td class="td_border_white"><h3>{{current_user.name}}</h3></td></tr>
+                <tr><td class="td_border_white"><h3>Логин / Почта</h3></td><td class="td_border_white"><h3>{{current_user.email}}</h3></td></tr>
+                <tr><td class="td_border_white"><h3>Дата регистрации</h3></td><td class="td_border_white"><h3>{{current_user.modified_date}}</h3></td></tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

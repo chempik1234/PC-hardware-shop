@@ -38,3 +38,22 @@ nav .dropdown:hover > .dropdown-content {
 .star {
   background: url(static/img/star.png) no-repeat;
 }
+
+td {
+  vertical-align: top;
+}
+
+.center_image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto
+}
+
+.table_td_space {
+  border-spacing: 20px;
+  border-collapse: separate;
+}
+
+.td_border_white {
+  border: 2px dotted #FFFFFF;
+}
