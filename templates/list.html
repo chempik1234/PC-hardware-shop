@@ -7,7 +7,7 @@
             <h2 style="color: gold;">Оценка: {% if item["rating"] == 0.0 %}ещё нет оценок{% else %}{{item["rating"]}}{% endif %}</h2>
             <table width="100%">
                 <tr>
-                    <th><a href="product/{{item['title']}}"><img src='static/img/cpu/{{item["title"]}}.jpg'></a></th>
+                    <th><a href="/product/{{type}}/{{item['title']}}"><img src='/static/img/{{type}}/{{item["title"]}}.jpg'></a></th>
                     <th width="20%"><h2>{{item['price']}} руб.</h2></th>
                 </tr>
             </table>

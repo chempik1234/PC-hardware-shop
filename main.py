@@ -30,7 +30,9 @@ def net_yest(a):
 
 
 def human_read_format(size):
-    l, k = ['Б', 'КБ', 'МБ', 'ГБ'], 0
+    l, k = ['Б', 'КБ', 'МБ', 'ГБ', 'ТБ'], 0
+    if size > 8:
+        size /= 8
     while size >= 1024:
         k += 1
         size /= 1024
@@ -48,71 +50,87 @@ def index():
     return render_template('index.html', title="Главная", style=url_style)
 
 
-@app.route('/cpu')
-def works_list():
+@app.route('/product/<product_type>')
+def product_list(product_type):
     d = []
-    for cpu in db_sess.query(CPU).all():
-        d.append({'title': cpu.title,
-                  'price': cpu.price,
-                  'rating': cpu.rating})
-        d[-1]["id"] = cpu.id
+    types = {'cpu': ('Процессоры', CPU, 'cpu')}
+    if product_type not in types.keys():
+        return abort(404)
+    for item in db_sess.query(types[product_type][1]).all():
+        d.append({'title': item.title,
+                  'price': item.price,
+                  'rating': round(item.rating / max(1, item.rates), 1)})
+        d[-1]["id"] = item.id
     style = url_for('static', filename='/styles/style3.css')
-    return render_template('list.html', style=style, title='Процессоры',
-                           dictionary=d)
+    return render_template('list.html', style=style, title=types[product_type][0],
+                           dictionary=d, type=types[product_type][2])
 
 
-@app.route('/product/<title>')
-def product(title):
+@app.route('/product/<pr_type>/<title>')
+def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
-    cpu = db_sess.query(CPU).filter(CPU.title == title).first()
+    tables = {'cpu': CPU}
+    item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     d, product_type = None, None
-    if cpu:
+    if pr_type == 'cpu':
         d = {
-            'Гарантия': str(cpu.warranty) + ' мес.',
-            'Страна выпуска': cpu.country,
-            'Модель': cpu.title,
-            'Поколение': cpu.generation,
-            'Год выпуска': cpu.year,
-            'Сокет': cpu.socket,
-            'Система охлаждения': net_yest(cpu.has_cooling),
-            'Термоинтерфейс': net_yest(cpu.term_interface),
-            'Количество ядер': cpu.cores,
-            'Максимальное количество потоков': cpu.threads,
-            'Техпроцесс': cpu.tech_process,
-            'Ядро': cpu.core,
-            'Кэш L1 (инструкции)': human_read_format(cpu.cash_l1_instructions_bits),
-            'Кэш L1 (данные)': human_read_format(cpu.cash_l1_data_bits),
-            'Кэш L2': human_read_format(cpu.cash_l2_bits),
-            'Кэш L3': human_read_format(cpu.cash_l3_bits),
-            'Частота': cpu.base_freq,
-            'Макс. частота': cpu.max_freq,
-            'Свободный множитель': cpu.free_mult,
-            'Тип памяти': cpu.memory,
-            'Макс. объём памяти': human_read_format(cpu.max_mem_bits),
-            'Каналы': cpu.channels,
-            'минимальная частота ОЗУ': cpu.min_RAM_freq,
-            'максимальная частота ОЗУ': cpu.max_RAM_freq,
-            'ECC': net_yest(cpu.ECC),
-            'TDP': cpu.TDP,
-            'Настраиваемая величина TDP': net_yest(cpu.custom_TDP),
-            'Максимальная температура': cpu.max_temp,
-            'Встроенное графическое ядро': net_yest(cpu.has_graphics),
-            'PCI': cpu.PCI,
-            'Число линий PCI Express': cpu.PCI_amount,
-            'Пропускная способность шины': cpu.bandwidth,
-            'Поддержка 64-битного набора команд': cpu.support_x64,
-            'Многопоточность': net_yest(cpu.multi_thread),
-            'Технология повышения частоты процессора': cpu.add_freq_tech,
-            'Технология энергосбережения': cpu.energy_save_tech,
-            'Описание': cpu.description,
-            'Цена': cpu.price,
-            'Оценка': cpu.rating,
+            'Гарантия': str(item.warranty) + ' мес.',
+            'Страна выпуска': item.country,
+            'Модель': item.title,
+            'Поколение': item.generation,
+            'Год выпуска': item.year,
+            'Сокет': item.socket,
+            'Система охлаждения': net_yest(item.has_cooling),
+            'Термоинтерфейс': net_yest(item.term_interface),
+            'Количество ядер': item.cores,
+            'Максимальное количество потоков': item.threads,
+            'Техпроцесс': str(item.tech_process) + ' нм',
+            'Ядро': item.core,
+            'Кэш L1 (инструкции)': human_read_format(item.cash_l1_instructions_bits),
+            'Кэш L1 (данные)': human_read_format(item.cash_l1_data_bits),
+            'Кэш L2': human_read_format(item.cash_l2_bits),
+            'Кэш L3': human_read_format(item.cash_l3_bits),
+            'Частота': str(item.base_freq) + ' ГГц',
+            'Макс. частота': str(item.max_freq) + ' ГГц',
+            'Свободный множитель': item.free_mult,
+            'Тип памяти': item.memory,
+            'Макс. объём памяти': human_read_format(item.max_mem_bits),
+            'Каналы': item.channels,
+            'минимальная частота ОЗУ': str(item.min_RAM_freq) + ' МГц',
+            'максимальная частота ОЗУ': str(item.max_RAM_freq) + ' МГц',
+            'ECC': net_yest(item.ECC),
+            'TDP': str(item.TDP) + ' Вт',
+            'Настраиваемая величина TDP': net_yest(item.custom_TDP),
+            'Максимальная температура': str(item.max_temp) + '°',
+            'Встроенное графическое ядро': net_yest(item.has_graphics),
+            'PCI': item.PCI,
+            'Число линий PCI Express': item.PCI_amount,
+            'Пропускная способность шины': item.bandwidth,
+            'Поддержка 64-битного набора команд': item.support_x64,
+            'Многопоточность': net_yest(item.multi_thread),
+            'Технология повышения частоты процессора': item.add_freq_tech,
+            'Технология энергосбережения': item.energy_save_tech,
+            'Описание': item.description,
+            'Цена': item.price,
+            'Оценка': round(item.rating / max(1, item.rates), 1),
+            'rates': item.rates
         }
         product_type = "cpu"
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,
                            item=d, product_type=product_type, keys=d.keys())
+
+
+@app.route('/product/<type>/<title>/<rate>')
+def leave_rate(type, title, rate):
+    if type == 'cpu':
+        cpu = db_sess.query(CPU).filter(CPU.title == title).first()
+        if cpu:
+            cpu.rates += 1
+            cpu.rating += int(rate)
+    db_sess.commit()
+    return redirect(f'/product/{type}/{title}')
 
 
 class DBLoginForm(FlaskForm):
@@ -244,6 +262,7 @@ def db_main():
 Вы также останетесь удовлетворены широкой поддержкой наборов команд и технологий — в процессор AMD FX-4300 OEM внедрена поддержка виртуализации, технология экономии энергии, широкий спектр наборов инструкций, в частности, SSE вплоть до 4.2, FMA3, EVP, MMX, XOP и другие.'''}
     price = {'AMD FX-4300': 3299}
     rating = {'AMD FX-4300': 0}
+    rates = {'AMD FX-4300': 0}
     for i in range(cpu_amount):
         cpu = CPU()
         ii = title[i]
@@ -286,6 +305,7 @@ def db_main():
         cpu.description = description[ii]
         cpu.price = price[ii]
         cpu.rating = rating[ii]
+        cpu.rates = rates[ii]
         db_sess.add(cpu)
     db_sess.commit()
 

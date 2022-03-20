@@ -68,4 +68,5 @@ class CPU(SqlAlchemyBase, SerializerMixin):
     energy_save_tech = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.Integer)
-    rating = sqlalchemy.Column(sqlalchemy.Float)
+    rating = sqlalchemy.Column(sqlalchemy.Integer)
+    rates = sqlalchemy.Column(sqlalchemy.Integer)

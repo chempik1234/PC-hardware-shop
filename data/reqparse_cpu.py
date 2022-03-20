@@ -42,7 +42,8 @@ parser.add_argument("add_freq_tech", required=True)
 parser.add_argument("energy_save_tech", required=True)
 parser.add_argument("description", required=True)
 parser.add_argument("price", required=True, type=int)
-parser.add_argument("rating", required=True, type=float)
+parser.add_argument("rating", required=True, type=int)
+parser.add_argument("rates", required=True, type=int)
 
 
 def abort_if_cpu_not_found(cpu_id):

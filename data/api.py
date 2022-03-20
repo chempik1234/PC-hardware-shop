@@ -29,7 +29,7 @@ def get_jobs():
               'has_graphics', 'PCI', 'PCI_amount',
               'bandwidth', 'support_x64', 'multi_thread',
               'add_freq_tech', 'energy_save_tech',
-              'description', 'price', 'rating'))
+              'description', 'price', 'rating', 'rates'))
         for item in cpu]})
 
 
@@ -53,7 +53,7 @@ def add_cpu():
                   'has_graphics', 'PCI', 'PCI_amount',
                   'bandwidth', 'support_x64', 'multi_thread',
                   'add_freq_tech', 'energy_save_tech',
-                  'description', 'price', 'rating']):
+                  'description', 'price', 'rating', 'rates']):
         return flask.jsonify({'error': 'Bad request'})
     elif db_sess.query(CPU).filter(CPU.id == request.json['id']).first():
         return flask.jsonify({'error': 'Id already exists'})
@@ -97,7 +97,8 @@ def add_cpu():
         energy_save_tech=request.json.get("energy_save_tech"),
         description=request.json.get("description"),
         price=request.json.get("price"),
-        rating=request.json.get("rating")
+        rating=request.json.get("rating"),
+        rates=request.json.get('rates'),
     )
     db_sess.add(cpu)
     db_sess.commit()
@@ -127,7 +128,7 @@ def get_job(cpu_id):
                 'has_graphics', 'PCI', 'PCI_amount',
                 'bandwidth', 'support_x64', 'multi_thread',
                 'add_freq_tech', 'energy_save_tech',
-                'description', 'price', 'rating')
+                'description', 'price', 'rating', 'rates')
             )
         }
     )
@@ -161,7 +162,7 @@ def edit_cpu():
              'has_graphics', 'PCI', 'PCI_amount',
              'bandwidth', 'support_x64', 'multi_thread',
              'add_freq_tech', 'energy_save_tech',
-             'description', 'price', 'rating']
+             'description', 'price', 'rating', 'rates']
     if not request.json:
         return flask.jsonify({'error': 'Empty request'})
     elif 'id' not in request.json or not all(key in keyss for key in request.json):
@@ -209,6 +210,7 @@ def edit_cpu():
         description=request.json.get("description"),
         price=request.json.get("price"),
         rating=request.json.get("rating"),
+        rates=request.json.get('rates'),
     )
     if cpu.warranty:
         db_sess.query(CPU).filter(CPU.id == cpu.id).update(values={CPU.warranty: cpu.warranty})
@@ -289,6 +291,8 @@ def edit_cpu():
         db_sess.query(CPU).filter(CPU.id == cpu.id).update(values={CPU.price: cpu.price})
     if cpu.rating:
         db_sess.query(CPU).filter(CPU.id == cpu.id).update(values={CPU.rating: cpu.rating})
+    if cpu.rates:
+        db_sess.query(CPU).filter(CPU.id == cpu.id).update(values={CPU.rates: cpu.rates})
     db_sess.commit()
     return flask.jsonify({'success': 'OK'})
 

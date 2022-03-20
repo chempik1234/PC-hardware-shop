@@ -34,3 +34,7 @@ nav .dropdown-content a {
 nav .dropdown:hover > .dropdown-content {
   display: block;
 }
+
+.star {
+  background: url(static/img/star.png) no-repeat;
+}

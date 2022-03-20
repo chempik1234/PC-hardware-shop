@@ -8,7 +8,15 @@
                     <img src="/static/img/{{product_type}}/{{title}}.jpg">
                 </td>
                 <td>
-                    <h3 style="color: orange;">Оценка: {% if item["Оценка"] == 0.0 %}ещё нет оценок{% else %}{{item["Оценка"]}}{% endif %}</h3>
+                    <h3 style="color: orange;">Оценка: {% if item["Оценка"] == 0 %}ещё нет оценок{% else %}{{item["Оценка"]}}{% endif %}</h3>
+                    <div>
+                        <h3>Оценить:</h3>
+                        <a href="/product/{{product_type}}/{{title}}/1"><img src="/static/img/star.png"></a>
+                        <a href="/product/{{product_type}}/{{title}}/2"><img src="/static/img/star.png"></a>
+                        <a href="/product/{{product_type}}/{{title}}/3"><img src="/static/img/star.png"></a>
+                        <a href="/product/{{product_type}}/{{title}}/4"><img src="/static/img/star.png"></a>
+                        <a href="/product/{{product_type}}/{{title}}/5"><img src="/static/img/star.png"></a>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -17,7 +25,7 @@
         <h2>Характеристики:</h2>
         <table class="main_table">
             {% for key in keys %}
-            {% if key != "Цена" and key != "Оценка" and key != "Описание" %}
+            {% if key != "Цена" and key != "Оценка" and key != "Описание" and key != "rates" %}
             <tr>
                 <td style="color: gray;"><h3>{{key}}</h3></td>
                 <td><h3>{{item[key]}}</h3></td>

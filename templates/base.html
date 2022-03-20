@@ -13,11 +13,11 @@
     <header>
       <nav class="navbar navbar-dark" style="background-color: #e43e1a;">
         <img src="/static/img/logo.png">
-        <a class="navbar-brand" href="#">Beast PC</a>
+        <a class="navbar-brand" href="#"><h1>Beast PC</h1></a>
         <li class="dropdown right">
           <a class="navbar-brand">Категории</a>
             <div class="dropdown-content">
-              <h5><a href="/cpu">Процессоры</a></h5>
+              <h5><a href="/product/cpu">Процессоры</a></h5>
               <h5><a href="#">Видеокарты</a></h5>
               <h5><a href="#">Материнские платы</a></h5>
               <h5><a href="#">Оперативная память</a></h5>
@@ -29,7 +29,7 @@
           <a class="btn btn-success" href="/logout">Выйти</a>
         {% else %}
         <p>
-          <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+          <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
           <a class="btn btn-success" href="/login">Войти</a>
         </p>
         {% endif %}
