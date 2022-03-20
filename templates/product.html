@@ -25,7 +25,7 @@
         <h2>Характеристики:</h2>
         <table class="main_table">
             {% for key in keys %}
-            {% if key != "Цена" and key != "Оценка" and key != "Описание" and key != "rates" %}
+            {% if key != "Цена" and key != "Оценка" and key != "Описание" and key != "rates" and item[key] != "" and item[key] != None %}
             <tr>
                 <td style="color: gray;"><h3>{{key}}</h3></td>
                 <td><h3>{{item[key]}}</h3></td>

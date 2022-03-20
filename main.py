@@ -9,12 +9,14 @@ import json
 from data.api import blueprint
 from data.reqparse_cpu import *
 from data.reqparse_user import *
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy_serializer import *
 import requests
 from flask_restful import reqparse, abort, Api, Resource
 app = Flask(__name__)
 api = Api(app)
+db = SQLAlchemy(app)
 api.add_resource(UserListResource, '/api/v2/users')
 api.add_resource(UserResource, '/api/v2/users/<int:user_id>')
 api.add_resource(CPUListResource, '/api/v2/cpu')
@@ -28,11 +30,15 @@ levels = {}
 def net_yest(a):
     return 'есть' if a else 'нет'
 
+def net_da(a):
+    return 'да' if a else "нет"
+
 
 def human_read_format(size):
-    l, k = ['Б', 'КБ', 'МБ', 'ГБ', 'ТБ'], 0
+    l, k = ['бит', 'Б', 'КБ', 'МБ', 'ГБ', 'ТБ'], 0
     if size > 8:
         size /= 8
+        k += 1
     while size >= 1024:
         k += 1
         size /= 1024
@@ -53,7 +59,8 @@ def index():
 @app.route('/product/<product_type>')
 def product_list(product_type):
     d = []
-    types = {'cpu': ('Процессоры', CPU, 'cpu')}
+    types = {'cpu': ('Процессоры', CPU),
+             'gpu': ('Видеокарты', GPU)}
     if product_type not in types.keys():
         return abort(404)
     for item in db_sess.query(types[product_type][1]).all():
@@ -63,15 +70,15 @@ def product_list(product_type):
         d[-1]["id"] = item.id
     style = url_for('static', filename='/styles/style3.css')
     return render_template('list.html', style=style, title=types[product_type][0],
-                           dictionary=d, type=types[product_type][2])
+                           dictionary=d, type=product_type)
 
 
 @app.route('/product/<pr_type>/<title>')
 def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
-    tables = {'cpu': CPU}
+    tables = {'cpu': CPU, 'gpu': GPU}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
-    d, product_type = None, None
+    d = None
     if pr_type == 'cpu':
         d = {
             'Гарантия': str(item.warranty) + ' мес.',
@@ -115,22 +122,76 @@ def product(pr_type, title):
             'Оценка': round(item.rating / max(1, item.rates), 1),
             'rates': item.rates
         }
-        product_type = "cpu"
+    elif pr_type == 'gpu':
+        print(item.max_efficiency_FP32)
+        d = {'Гарантия': item.warranty,
+             'Страна выпуска': item.country,
+             'Название': item.title,
+             'Год выпуска': item.year,
+             'Код производителя': item.manufacturer_code,
+             'Для майнинга': net_da(item.is_for_mining),
+             'LHR': net_da(item.LHR),
+             'Объём видеопамяти': human_read_format(item.memory),
+             'Тип памяти': item.memory_type,
+             'Пропускная способность памяти на один контакт': str(item.bandwidth) + ' Гбит/c',
+             'Разрядность шины памяти': str(item.band_64x_32x) + ' бит',
+             'Максимальная пропускная способность памяти': str(item.max_mem_bandwidth) + ' Гбайт/c',
+             'Микроархитектура': item.micro_arc,
+             'Кодовое название графического процессора ': item.graph_cpu,
+             'Техпроцесс': str(item.techprocess) + 'нм',
+             'Штатная частота работы видеочипа': str(item.chip_freq) + " МГц",
+             'Количество универсальных процессоров (ALU)': item.ALU,
+             'Число текстурных блоков': item.texture_blocks,
+             'Число блоков растеризации ': item.raster_blocks,
+             'Максимальная температура процессора': item.max_temp,
+             'Поддержка трассировки лучей': net_yest(item.RTX),
+             'Аппаратное ускорение трассировки лучей (RT-ядра)': net_yest(item.appart_accelerate_RT),
+             'Тензорные ядра': item.tenz_cores,
+             'Пиковая производительность чипов в FP32': str(item.max_efficiency_FP32) + ' GFLOPS',
+             'Видеоразъемы': item.connectors,
+             'Версия HDMI': item.HDMI_version,
+             'Максимальное разрешение': item.max_resolution,
+             'Количество подключаемых одновременно мониторов': item.max_monitors,
+             'Интерфейс подключения': item.connection_interface,
+             'Версия PCI Express': item.PCI_version,
+             'Поддержка мультипроцессорной конфигурации': net_yest(item.support_mult_cpu_config),
+             'Необходимость дополнительного питания': net_yest(item.need_extra_power),
+             'Разъемы дополнительного питания': net_yest(item.extra_power_connections),
+             'Максимальное энергопотребление': item.max_consuming_power,
+             'Рекомендуемый блок питания': item.recommended_power,
+             'Тип охлаждения': item.cooling,
+             'Тип и количество установленных вентиляторов': item.type_and_amount_fans,
+             'Управление скоростью вращения': net_yest(item.fan_speed_control),
+             'Низкопрофильная карта (Low Profile)': net_da(item.low_profile),
+             'Количество занимаемых слотов расширения': item.needed_slots,
+             'Длина видеокарты': item.length,
+             'Толщина видеокарты': item.width,
+             'Вес': item.weight,
+             'Подсветка элементов видеокарты': net_yest(item.illumination),
+             'Синхронизация RGB подсветки': net_yest(item.synch_RGB),
+             'LCD дисплей': net_yest(item.LCD),
+             'Переключатель BIOS': net_yest(item.BIOS_switch),
+             'Описание': item.description,
+             'Цена': item.price,
+             'Оценка': round(item.rating / max(1, item.rates), 1),
+             'rates': item.rates,
+        }
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,
-                           item=d, product_type=product_type, keys=d.keys())
+                           item=d, product_type=pr_type, keys=d.keys())
 
 
-@app.route('/product/<type>/<title>/<rate>')
-def leave_rate(type, title, rate):
-    if type == 'cpu':
-        cpu = db_sess.query(CPU).filter(CPU.title == title).first()
-        if cpu:
-            cpu.rates += 1
-            cpu.rating += int(rate)
+@app.route('/product/<pr_type>/<title>/<rate>')
+def leave_rate(pr_type, title, rate):
+    types = {'cpu': CPU, 'gpu': GPU}
+    table = types[pr_type]
+    item = db_sess.query(table).filter(table.title == title).first()
+    if item:
+        item.rates += 1
+        item.rating += int(rate)
     db_sess.commit()
-    return redirect(f'/product/{type}/{title}')
+    return redirect(f'/product/{pr_type}/{title}')
 
 
 class DBLoginForm(FlaskForm):
@@ -323,4 +384,5 @@ if __name__ == '__main__':
     db_sess = db_session.create_session()
     if not needtofill:
         db_main()
+    db.create_all()
     app.run(port=8080, host='127.0.0.1')
