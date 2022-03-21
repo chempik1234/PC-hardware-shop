@@ -57,3 +57,10 @@ td {
 .td_border_white {
   border: 2px dotted #FFFFFF;
 }
+
+.carousel {
+  width: 90%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
