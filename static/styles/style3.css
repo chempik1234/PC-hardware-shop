@@ -21,14 +21,13 @@ body {
 nav .dropdown-content {
   display: none;
   position: absolute;
-  background: gray;
+  background: black;
   width: 125%;
-  border-radius: 5px;
   border: 2px solid black;
+  z-index: 1;
 }
 nav .dropdown-content a {
-  color: black;
-  background: white;
+  color: white;
   border-radius: 5px;
 }
 nav .dropdown:hover > .dropdown-content {
@@ -63,4 +62,5 @@ td {
   left: 0;
   right: 0;
   margin: auto;
+  z-index: 0;
 }
