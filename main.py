@@ -223,6 +223,35 @@ class SignInForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
+@app.route('/product/buy/<pr_type>/<title>')
+def product_buy(pr_type, title):
+    tables = {'cpu': CPU, 'gpu': GPU}
+    item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
+    price = item.price
+    json_ = {
+        "caption": "Покупка товара",
+        "description": "Название: " + title,
+        "meta": title + pr_type + str(randint(100000, 999999)),
+        "autoclear": True,
+        "items": [
+            {
+                "name": title,
+                "price": str(price),
+                "nds": "nds_10",
+                "currency": "RUB",
+                "amount": 1,
+                "image": {
+                    "url": url_for('static', filename='/img/' + pr_type + '/' + title + '.jpg')
+              }
+            }
+          ],
+        "mode": "test",
+        "return_url": "/product/" + pr_type
+        }
+    requests.post('https://pay-sdk.yandex.net/v1', json=json_)
+    return index()
+
+
 @app.route('/register', methods=['GET','POST'])
 def register():
     form = DBLoginForm()
