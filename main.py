@@ -27,6 +27,10 @@ login_manager.init_app(app)
 levels = {}
 
 
+def net_string(a):
+    return a if a else 'нет'
+
+
 def net_yest(a):
     return 'есть' if a else 'нет'
 
@@ -61,7 +65,8 @@ def index():
 def product_list(product_type):
     d = []
     types = {'cpu': ('Процессоры', CPU),
-             'gpu': ('Видеокарты', GPU)}
+             'gpu': ('Видеокарты', GPU),
+             'motherboard': ('Материнские платы', Motherboard)}
     if product_type not in types.keys():
         return abort(404)
     for item in db_sess.query(types[product_type][1]).all():
@@ -77,7 +82,7 @@ def product_list(product_type):
 @app.route('/product/<pr_type>/<title>')
 def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
-    tables = {'cpu': CPU, 'gpu': GPU}
+    tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     d = None
     if pr_type == 'cpu':
@@ -124,7 +129,6 @@ def product(pr_type, title):
             'rates': item.rates
         }
     elif pr_type == 'gpu':
-        print(item.max_efficiency_FP32)
         d = {'Гарантия': item.warranty,
              'Страна выпуска': item.country,
              'Название': item.title,
@@ -177,6 +181,62 @@ def product(pr_type, title):
              'Оценка': round(item.rating / max(1, item.rates), 1),
              'rates': item.rates,
         }
+    elif pr_type == 'motherboard':
+        d = {'Гарантия': item.warranty,
+             'Страна выпуска': item.country,
+             'Название': item.title,
+             'Год выпуска': item.year,
+             'Форм-фактор': item.form_factor,
+             'Ширина': item.width,
+             'Высота': item.height,
+             'Сокет': item.socket,
+             'Чипсет': item.chipset,
+             'Встроенный центральный процессор': item.built_in_cpu,
+             'Модель встроенного центрального процессора': item.title_built_in_cpu,
+             'Количество слотов памяти': item.memory_slots_amount,
+             'Тип памяти': item.memory_type,
+             'Частота оперативной памяти': item.ram_freq,
+             'Максимальный объём памяти': human_read_format(item.max_memory),
+             'Количество каналов памяти': item.memory_channels_amount,
+             'Форм фактор поддерживаемой памяти': item.memory_form_factor,
+             'Количество слотов M2': item.m2_slots_amount,
+             'Количество слотов SATA': item.sata_slots_amount,
+             'Поддержка NVMe': net_yest(item.nvme_support),
+             'Режим работы SATA RAID': item.sata_raid_mode,
+             'Разъёмы M2': net_string(item.m2_slots),
+             'Форм-фактор M2': item.m2_form_factor,
+             'Другие разъёмы накопителей': net_string(item.other_drive_slots),
+             'Версия PCI Express': item.pci_express_version,
+             'Количество слотов PCI-E x1': item.pci_e_x1_slots_amount,
+             'Количество слотов PCI-E x16': item.pci_e_x16_slots_amount,
+             'Поддержка SLI/CrossFire': net_yest(item.sli_crossfire_support),
+             'Другие слоты расширения': item.other_expansion_slots,
+             'Видеовыходы': item.video_outputs,
+             'Количество и тип USB на задней панели': item.usb_amount_and_type,
+             'Цифровые аудио порты (S/PDIF)': item.digital_and_audio_ports_s_pdif,
+             'Другие разъемы на задней панели': item.other_slots_on_back_panel,
+             'Количество сетевых портов (RJ-45)': item.network_ports_amount_rj45,
+             '4-Pin PWM коннекторы для вентиляторов': item.fan_4pin_connectors,
+             'Внутренние коннекторы USB на плате': item.internal_connectors_on_usb_plate_amount_and_type,
+             'Разъем питания процессорного кулера': item.cpu_cooler_power_slot,
+             'M.2 ключ E': net_yest(item.m2_e_key),
+             'Интерфейс LPT': net_yest(item.lpt_interface),
+             'Чипсет звукового адаптера': 'sound_adapter_chipset',
+             'Звуковая схема': item.sound_scheme,
+             'Встроенный адаптер Wi-Fi': item.built_in_wifi_adapter,
+             'Bluetooth': net_string(item.bluetooth),
+             'Скорость сетевого адаптера': item.network_adapter_speed,
+             'Чипсет сетевого адаптера': item.network_adapter_chipset,
+             'Количество фаз питания': item.power_phases_amount,
+             'Разъем питания процессора': item.cpu_power_slot,
+             'Пассивное охлаждение': item.passive_cooling,
+             'Основной разъем питания': item.main_power_slot,
+             'Подсветка элементов платы': net_yest(item.illumination),
+             'Описание': item.description,
+             'Цена': item.price,
+             'Оценка': round(item.rating / max(1, item.rates), 1),
+             'rates': item.rates,
+        }
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,
@@ -185,7 +245,7 @@ def product(pr_type, title):
 
 @app.route('/product/<pr_type>/<title>/<rate>')
 def leave_rate(pr_type, title, rate):
-    types = {'cpu': CPU, 'gpu': GPU}
+    types = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard}
     table = types[pr_type]
     item = db_sess.query(table).filter(table.title == title).first()
     if item:
@@ -225,7 +285,7 @@ class SignInForm(FlaskForm):
 
 @app.route('/product/buy/<pr_type>/<title>')
 def product_buy(pr_type, title):
-    tables = {'cpu': CPU, 'gpu': GPU}
+    tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     price = item.price
     json_ = {
