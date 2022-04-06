@@ -61,12 +61,15 @@ def index():
     return render_template('index.html', title="Главная", style=url_style)
 
 
+
 @app.route('/product/<product_type>')
 def product_list(product_type):
     d = []
     types = {'cpu': ('Процессоры', CPU),
              'gpu': ('Видеокарты', GPU),
-             'motherboard': ('Материнские платы', Motherboard)}
+             'motherboard': ('Материнские платы', Motherboard),
+             'ram_dimm': ('Оперативная память DIMM', RAM_DIMM),
+             'ram_so_dimm': ('Оперативная память SO-DIMM', RAM_SO_DIMM)}
     if product_type not in types.keys():
         return abort(404)
     for item in db_sess.query(types[product_type][1]).all():
@@ -82,7 +85,8 @@ def product_list(product_type):
 @app.route('/product/<pr_type>/<title>')
 def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
-    tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard}
+    tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
+              'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     d = None
     if pr_type == 'cpu':
@@ -129,7 +133,7 @@ def product(pr_type, title):
             'rates': item.rates
         }
     elif pr_type == 'gpu':
-        d = {'Гарантия': item.warranty,
+        d = {'Гарантия': str(item.warranty) + ' мес.',
              'Страна выпуска': item.country,
              'Название': item.title,
              'Год выпуска': item.year,
@@ -182,7 +186,7 @@ def product(pr_type, title):
              'rates': item.rates,
         }
     elif pr_type == 'motherboard':
-        d = {'Гарантия': item.warranty,
+        d = {'Гарантия': str(item.warranty) + ' мес.',
              'Страна выпуска': item.country,
              'Название': item.title,
              'Год выпуска': item.year,
@@ -237,6 +241,56 @@ def product(pr_type, title):
              'Оценка': round(item.rating / max(1, item.rates), 1),
              'rates': item.rates,
         }
+    elif pr_type == 'ram_dimm':
+        d = {'Гарантия': str(item.warranty) + ' мес.',
+             'Страна выпуска': item.country,
+             'Название': item.title,
+             'Год выпуска': item.year,
+             'Тип': item.common_type,
+             'Тип памяти': item.type_ddr,
+             'Ранговость': item.rang,
+             'Регистровая память': net_da(item.register_memory),
+             'ECC-память': net_yest(item.ecc_memory),
+             'Память одного модуля': human_read_format(item.one_module_memory),
+             'Суммарный объем памяти всего комплекта': human_read_format(item.all_memory),
+             'Количество модулей в комплекте': item.modules_amount,
+             'Тактовая частота': str(item.freq) + ' МГц',
+             'CAS Latency (CL)': item.cas_latency_cl,
+             'RAS to CAS Delay (tRCD)': item.ras_to_cas_delay_trcd,
+             'Row Precharge Delay (tRP)': item.row_precharge_delay_trp,
+             'Наличие радиатора': net_yest(item.has_radiator),
+             'Подсветка элементов платы': net_yest(item.illumination),
+             'Высота': str(item.height) + ' мм',
+             'Низкопрофильная (Low Profile)': net_da(item.low_profile),
+             'Напряжение питания': str(item.power_voltage) + ' В',
+             'Подсветка элементов платы': net_yest(item.illumination),
+             'Цвет радиатора': item.radiator_color,
+             'Описание': item.description,
+             'Цена': item.price,
+             'Оценка': round(item.rating / max(1, item.rates), 1),
+             'rates': item.rates,
+             }
+    elif pr_type == 'ram_so_dimm':
+        d = {'Гарантия': str(item.warranty) + ' мес.',
+             'Страна выпуска': item.country,
+             'Название': item.title,
+             'Тип': item.common_type,
+             'Тип памяти': item.type_ddr,
+             'Память одного модуля': human_read_format(item.one_module_memory),
+             'Суммарный объем памяти всего комплекта': human_read_format(item.all_memory),
+             'Количество модулей в комплекте': item.modules_amount,
+             'Частота': str(item.freq) + ' МГц',
+             'CAS Latency (CL)': item.cas_latency_cl,
+             'RAS to CAS Delay (tRCD)': item.ras_to_cas_delay_trcd,
+             'Row Precharge Delay (tRP)': item.row_precharge_delay_trp,
+             'Количество чипов модуля': item.chips_amount,
+             'Двухсторонняя установка чипов': net_yest(item.double_sided_chips_setup),
+             'Напряжение питания': str(item.power_voltage) + ' В',
+             'Описание': item.description,
+             'Цена': item.price,
+             'Оценка': round(item.rating / max(1, item.rates), 1),
+             'rates': item.rates,
+             }
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,
