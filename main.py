@@ -6,13 +6,18 @@ from wtforms.validators import DataRequired, EqualTo
 from random import randint
 import os
 import json
-from data.api_users import blueprint
 from data.reqparse_user import *
 from data.reqparse_cpu import *
 from data.reqparse_gpu import *
 from data.reqparse_motherboard import *
 from data.reqparse_ram_dimm import *
 from data.reqparse_ram_so_dimm import *
+from data import api_users
+from data import api_cpu
+from data import api_gpu
+from data import api_motherboard
+from data import api_ram_dimm
+from data import api_ram_so_dimm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy_serializer import *
@@ -540,7 +545,12 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-app.register_blueprint(blueprint)
+app.register_blueprint(api_users.blueprint)
+app.register_blueprint(api_cpu.blueprint)
+app.register_blueprint(api_gpu.blueprint)
+app.register_blueprint(api_motherboard.blueprint)
+app.register_blueprint(api_ram_dimm.blueprint)
+app.register_blueprint(api_ram_so_dimm.blueprint)
 PATH = os.path.abspath(os.getcwd())
 needtofill = os.path.isfile(PATH + '\\db\\e_shop.db')
 db_session.global_init("db/e_shop.db")
