@@ -533,8 +533,8 @@ PATH = os.path.abspath(os.getcwd())
 needtofill = os.path.isfile(PATH + '\\db\\e_shop.db')
 db_session.global_init("db/e_shop.db")
 db_sess = db_session.create_session()
-if not needtofill:
-    db_main()
+# if not needtofill:
+#     db_main()
 db.create_all()
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
