@@ -389,7 +389,6 @@ def sign_in():
     form = SignInForm()
     url_style = url_for('static', filename='styles/style3.css')
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -529,13 +528,13 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+app.register_blueprint(blueprint)
+PATH = os.path.abspath(os.getcwd())
+needtofill = os.path.isfile(PATH + '\\db\\e_shop.db')
+db_session.global_init("db/e_shop.db")
+db_sess = db_session.create_session()
+if not needtofill:
+    db_main()
+db.create_all()
 if __name__ == '__main__':
-    app.register_blueprint(blueprint)
-    PATH = os.path.abspath(os.getcwd())
-    needtofill = os.path.isfile(PATH + '\\db\\e_shop.db')
-    db_session.global_init("db/e_shop.db")
-    db_sess = db_session.create_session()
-    if not needtofill:
-        db_main()
-    db.create_all()
     app.run(port=8080, host='127.0.0.1')
