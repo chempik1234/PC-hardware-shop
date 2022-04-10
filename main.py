@@ -214,7 +214,7 @@ def product(pr_type, title):
              'Высота': item.height,
              'Сокет': item.socket,
              'Чипсет': item.chipset,
-             'Встроенный центральный процессор': item.built_in_cpu,
+             'Встроенный центральный процессор': net_yest(item.built_in_cpu),
              'Модель встроенного центрального процессора': item.title_built_in_cpu,
              'Количество слотов памяти': item.memory_slots_amount,
              'Тип памяти': item.memory_type,
