@@ -27,6 +27,26 @@ login_manager.init_app(app)
 levels = {}
 
 
+def byte(a):
+    return a * 8
+
+
+def KB(a):
+    return byte(a * 1024)
+
+
+def MB(a):
+    return KB(a * 1024)
+
+
+def GB(a):
+    return MB(a * 1024)
+
+
+def TB(a):
+    return GB(a * 1024)
+
+
 def net_string(a):
     return a if a else 'нет'
 
@@ -251,7 +271,7 @@ def product(pr_type, title):
              'Регистровая память': net_da(item.register_memory),
              'ECC-память': net_yest(item.ecc_memory),
              'Память одного модуля': human_read_format(item.one_module_memory),
-             'Суммарный объем памяти всего комплекта': human_read_format(item.all_memory),
+             'Суммарный объем памяти всего комплекта': human_read_format(GB(item.all_memory)),
              'Количество модулей в комплекте': item.modules_amount,
              'Тактовая частота': str(item.freq) + ' МГц',
              'CAS Latency (CL)': item.cas_latency_cl,
@@ -276,7 +296,7 @@ def product(pr_type, title):
              'Тип': item.common_type,
              'Тип памяти': item.type_ddr,
              'Память одного модуля': human_read_format(item.one_module_memory),
-             'Суммарный объем памяти всего комплекта': human_read_format(item.all_memory),
+             'Суммарный объем памяти всего комплекта': human_read_format(GB(item.all_memory)),
              'Количество модулей в комплекте': item.modules_amount,
              'Частота': str(item.freq) + ' МГц',
              'CAS Latency (CL)': item.cas_latency_cl,
@@ -409,26 +429,6 @@ def logout():
 @app.route('/success')
 def success():
     return redirect('/')
-
-
-def byte(a):
-    return a * 8
-
-
-def KB(a):
-    return byte(a * 1024)
-
-
-def MB(a):
-    return KB(a * 1024)
-
-
-def GB(a):
-    return MB(a * 1024)
-
-
-def TB(a):
-    return GB(a * 1024)
 
 
 def db_main():
