@@ -61,7 +61,6 @@ def index():
     return render_template('index.html', title="Главная", style=url_style)
 
 
-
 @app.route('/product/<product_type>')
 def product_list(product_type):
     d = []
