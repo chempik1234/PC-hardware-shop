@@ -148,53 +148,53 @@ def edit_ram_so_dimm():
         rates=request.json.get("rates")
     )
     if rsd.warranty:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.warranty: rsd.warranty})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.warranty: rsd.warranty})
     if rsd.country:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.country: rsd.country})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.country: rsd.country})
     if rsd.title:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.title: rsd.title})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.title: rsd.title})
     if rsd.common_type:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.common_type: rsd.common_type})
     if rsd.type_ddr:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.type_ddr: rsd.type_ddr})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.type_ddr: rsd.type_ddr})
     if rsd.one_module_memory:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.one_module_memory: rsd.one_module_memory})
     if rsd.all_memory:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.all_memory: rsd.all_memory})
     if rsd.modules_amount:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.modules_amount: rsd.modules_amount})
     if rsd.freq:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.freq: rsd.freq})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.freq: rsd.freq})
     if rsd.ras_to_cas_delay_trcd:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.ras_to_cas_delay_trcd: rsd.ras_to_cas_delay_trcd})
     if rsd.row_precharge_delay_trp:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.row_precharge_delay_trp: rsd.row_precharge_delay_trp})
     if rsd.cas_latency_cl:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.cas_latency_cl: rsd.cas_latency_cl})
     if rsd.chips_amount:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.chips_amount: rsd.chips_amount})
     if rsd.double_sided_chips_setup:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.double_sided_chips_setup: rsd.double_sided_chips_setup})
     if rsd.power_voltage:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.power_voltage: rsd.power_voltage})
     if rsd.description:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(
             values={RAM_SO_DIMM.description: rsd.description})
     if rsd.price:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.price: rsd.price})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.price: rsd.price})
     if rsd.rating:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.rating: rsd.rating})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.rating: rsd.rating})
     if rsd.rates:
-        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.rates: rsd.rates})
+        db_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rsd.id).update(values={RAM_SO_DIMM.rates: rsd.rates})
     db_sess.commit()
     return flask.jsonify({'success': 'OK'})
