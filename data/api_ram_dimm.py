@@ -122,16 +122,16 @@ def delete_ram_dimm(_id):
 def edit_ram_dimm():
     db_sess = db_session.create_session()
     keyss = ["id", "warranty", "country", "title",
-              "year", "common_type", "type_ddr",
-              "one_module_memory", "all_memory",
-              "modules_amount", "ecc_memory", "rang",
-              "register_memory", "freq",
-              "intel_xpm_profiles", "modes",
-              "cas_latency_cl", "ras_to_cas_delay_trcd",
-              "row_precharge_delay_trp", "has_radiator",
-              "illumination", "height", "radiator_color",
-              "low_profile", "power_voltage", "description",
-              "price", "rating", "rates"]
+             "year", "common_type", "type_ddr",
+             "one_module_memory", "all_memory",
+             "modules_amount", "ecc_memory", "rang",
+             "register_memory", "freq",
+             "intel_xpm_profiles", "modes",
+             "cas_latency_cl", "ras_to_cas_delay_trcd",
+             "row_precharge_delay_trp", "has_radiator",
+             "illumination", "height", "radiator_color",
+             "low_profile", "power_voltage", "description",
+             "price", "rating", "rates"]
     if not request.json:
         return flask.jsonify({'error': 'Empty request'})
     elif 'id' not in request.json or not all(key in keyss for key in request.json):
@@ -139,6 +139,7 @@ def edit_ram_dimm():
     elif not db_sess.query(RAM_DIMM).filter(RAM_DIMM.id == request.json['id']).first():
         return flask.jsonify({'error': 'Id does not exist'})
     rd = RAM_DIMM(
+        id=request.json['id'],
         warranty=request.json.get("warranty"),
         country=request.json.get("country"),
         title=request.json.get("title"),

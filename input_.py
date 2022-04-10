@@ -1,5 +1,5 @@
 from data.__all_models import *
-class_ = RAM_DIMM
+class_ = RAM_SO_DIMM
 d = class_.__dict__
 print('''
 from data import db_session
@@ -23,5 +23,5 @@ for i in d.keys():
         print(i + '=request.json.get("' + i + '"),')
 for i in d.keys():
     if i != 'id' and i[0] != '_':
-        print(f'if rd.{i}:')
-        print('\tdb_sess.query(RAM_DIMM).filter(RAM_DIMM.id == rd.id).update(values={RAM_DIMM.' + i + ': rd.' + i + '})')
+        print(f'if rsd.{i}:')
+        print('\tdb_sess.query(RAM_SO_DIMM).filter(RAM_SO_DIMM.id == rd.id).update(values={RAM_SO_DIMM.' + i + ': rsd.' + i + '})')
