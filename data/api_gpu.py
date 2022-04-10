@@ -176,7 +176,7 @@ def delete_gpu(_id):
     return flask.jsonify({'success': 'OK'})
 
 
-@blueprint.route('/api/cpu_edit/', methods=['PUT'])
+@blueprint.route('/api/gpu_edit/', methods=['PUT'])
 def edit_cpu():
     db_sess = db_session.create_session()
     keyss = ["id", "warranty",
