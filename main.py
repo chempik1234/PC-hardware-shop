@@ -298,7 +298,8 @@ def product(pr_type, title):
 
 @app.route('/product/<pr_type>/<title>/<rate>')
 def leave_rate(pr_type, title, rate):
-    types = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard}
+    types = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
+             'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM}
     table = types[pr_type]
     item = db_sess.query(table).filter(table.title == title).first()
     if item:
