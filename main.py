@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, EqualTo
 from random import randint
 import os
 import json
-from data.api import blueprint
+from data.api_users import blueprint
 from data.reqparse_user import *
 from data.reqparse_cpu import *
 from data.reqparse_gpu import *

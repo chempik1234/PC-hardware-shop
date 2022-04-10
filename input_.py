@@ -1,5 +1,5 @@
 from data.__all_models import *
-class_ = RAM_SO_DIMM
+class_ = GPU
 d = class_.__dict__
 print('''
 from data import db_session
@@ -19,4 +19,9 @@ for i in d.keys():
         print(')')
 print('", "'.join(d.keys()))
 for i in d.keys():
-    print(i + '=args["' + i + '"],')
+    if i[0] != '_':
+        print(i + '=request.json.get("' + i + '"),')
+for i in d.keys():
+    if i != 'id' and i[0] != '_':
+        print(f'if gpu.{i}:')
+        print('\tdb_sess.query(GPU).filter(GPU.id == gpu.id).update(values={GPU.' + i + ': gpu.' + i + '})')
