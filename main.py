@@ -341,7 +341,7 @@ def product(pr_type, title):
         d = {
             'Гарантия': str(item.warranty) + ' мес.',
             'Название': item.title,
-            'Тип': item.common_type,
+            'Тип': item.ssd_type,
             'Объём памяти (ГБ)': item.memory,
             'Физический интерфейс': item.phys_interface,
             'Количество бит на ячейку': item.bit_per_cell_amount,
