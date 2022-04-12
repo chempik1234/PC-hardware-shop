@@ -44,6 +44,15 @@ login_manager.init_app(app)
 levels = {}
 
 
+def msata_25(a):
+    if a is None:
+        return None
+    elif not a:
+        return "2.5''"
+    else:
+        return "mSATA"
+
+
 def byte(a):
     return a * 8
 
@@ -295,7 +304,6 @@ def product(pr_type, title):
              'RAS to CAS Delay (tRCD)': item.ras_to_cas_delay_trcd,
              'Row Precharge Delay (tRP)': item.row_precharge_delay_trp,
              'Наличие радиатора': net_yest(item.has_radiator),
-             'Подсветка элементов платы': net_yest(item.illumination),
              'Высота': str(item.height) + ' мм',
              'Низкопрофильная (Low Profile)': net_da(item.low_profile),
              'Напряжение питания': str(item.power_voltage) + ' В',
@@ -327,6 +335,28 @@ def product(pr_type, title):
              'Оценка': round(item.rating / max(1, item.rates), 1),
              'rates': item.rates,
              }
+    elif pr_type == 'ssd':
+        d = {
+            'Гарантия': str(item.warranty) + ' мес.',
+            'Название': item.title,
+            'Тип': item.common_type,
+            'Объём памяти (ГБ)': item.memory,
+            'Физический интерфейс': item.phys_interface,
+            'Количество бит на ячейку': item.bit_per_cell_amount,
+            'Структура памяти': item.memory_structure,
+            'DRAM буфер': net_yest(item.DTAM_buffer),
+            'Максимальная скорость последовательного чтения': str(item.max_cons_reading_speed) + 'Мбайт/сек',
+            'Максимальная скорость последовательной записи': str(item.max_cons_writing_speed) + 'Мбайт/сек',
+            'Максимальный ресурс записи (TBW)': str(item.max_writing_resource_TBW) + 'ТБ',
+            'DWPD': item.DWPD,
+            'Аппаратное шифрование данных': net_yest(item.hardware_data_encryption),
+            'Толщина (мм)': item.width,
+            'Форм-фактор': msata_25(item.form_factor),
+            'Описание': item.description,
+            'Цена': item.price,
+            'Оценка': round(item.rating / max(1, item.rates), 1),
+            'rates': item.rates,
+        }
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,

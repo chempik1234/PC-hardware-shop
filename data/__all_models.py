@@ -246,3 +246,29 @@ class RAM_SO_DIMM(SqlAlchemyBase, SerializerMixin):
     price = sqlalchemy.Column(sqlalchemy.Integer)
     rating = sqlalchemy.Column(sqlalchemy.Integer)
     rates = sqlalchemy.Column(sqlalchemy.Integer)
+
+
+class SSD(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'ssd'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    warranty = sqlalchemy.Column(sqlalchemy.Integer)
+    title = sqlalchemy.Column(sqlalchemy.String)
+    year = sqlalchemy.Column(sqlalchemy.Integer)
+    ssd_type = sqlalchemy.Column(sqlalchemy.String)
+    memory = sqlalchemy.Column(sqlalchemy.Integer)
+    phys_interface = sqlalchemy.Column(sqlalchemy.String)
+    bit_per_cell_amount = sqlalchemy.Column(sqlalchemy.String)
+    memory_structure = sqlalchemy.Column(sqlalchemy.String)
+    DRAM_buffer = sqlalchemy.Column(sqlalchemy.Boolean)
+    max_cons_reading_speed = sqlalchemy.Column(sqlalchemy.Integer)
+    max_cons_writing_speed = sqlalchemy.Column(sqlalchemy.Integer)
+    max_writing_resource_TBW = sqlalchemy.Column(sqlalchemy.Integer)
+    DWPD = sqlalchemy.Column(sqlalchemy.Float)
+    hardware_data_encryption = sqlalchemy.Column(sqlalchemy.Boolean)
+    width = sqlalchemy.Column(sqlalchemy.Integer)
+    form_factor = sqlalchemy.Column(sqlalchemy.Boolean)  # 2.5'' - 0, msata - 1
+    description = sqlalchemy.Column(sqlalchemy.String)
+    price = sqlalchemy.Column(sqlalchemy.Integer)
+    rating = sqlalchemy.Column(sqlalchemy.Integer)
+    rates = sqlalchemy.Column(sqlalchemy.Integer)
