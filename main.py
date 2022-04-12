@@ -12,12 +12,14 @@ from data.reqparse_gpu import *
 from data.reqparse_motherboard import *
 from data.reqparse_ram_dimm import *
 from data.reqparse_ram_so_dimm import *
+from data.reqparse_ssd import *
 from data import api_users
 from data import api_cpu
 from data import api_gpu
 from data import api_motherboard
 from data import api_ram_dimm
 from data import api_ram_so_dimm
+from data import api_ssd
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy_serializer import *
@@ -38,6 +40,8 @@ api.add_resource(RAMDIMMListResource, '/api/v2/ram_dimm')
 api.add_resource(RAMDIMMResource, '/api/v2/ram_dimm/<int:_id>')
 api.add_resource(RAMSODIMMListResource, '/api/v2/ram_so_dimm')
 api.add_resource(RAMSODIMMResource, '/api/v2/ram_so_dimm/<int:_id>')
+api.add_resource(SSDListResource, '/api/v2/ssd')
+api.add_resource(SSDResource, '/api/v2/ssd/<int:_id>')
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -584,6 +588,7 @@ app.register_blueprint(api_gpu.blueprint)
 app.register_blueprint(api_motherboard.blueprint)
 app.register_blueprint(api_ram_dimm.blueprint)
 app.register_blueprint(api_ram_so_dimm.blueprint)
+app.register_blueprint(api_ssd.blueprint)
 PATH = os.path.abspath(os.getcwd())
 needtofill = os.path.isfile(PATH + '\\db\\e_shop.db')
 db_session.global_init("db/e_shop.db")
