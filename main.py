@@ -114,7 +114,8 @@ def product_list(product_type):
              'gpu': ('Видеокарты', GPU),
              'motherboard': ('Материнские платы', Motherboard),
              'ram_dimm': ('Оперативная память DIMM', RAM_DIMM),
-             'ram_so_dimm': ('Оперативная память SO-DIMM', RAM_SO_DIMM)}
+             'ram_so_dimm': ('Оперативная память SO-DIMM', RAM_SO_DIMM),
+             'ssd': ('SSD', SSD)}
     if product_type not in types.keys():
         return abort(404)
     for item in db_sess.query(types[product_type][1]).all():
@@ -131,7 +132,8 @@ def product_list(product_type):
 def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
     tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
-              'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM}
+              'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM,
+              'ssd': SSD}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     d = None
     if pr_type == 'cpu':
@@ -366,7 +368,8 @@ def product(pr_type, title):
 @app.route('/product/<pr_type>/<title>/<rate>')
 def leave_rate(pr_type, title, rate):
     types = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
-             'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM}
+             'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM,
+             'ssd': SSD}
     table = types[pr_type]
     item = db_sess.query(table).filter(table.title == title).first()
     if item:
