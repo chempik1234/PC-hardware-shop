@@ -346,7 +346,7 @@ def product(pr_type, title):
             'Физический интерфейс': item.phys_interface,
             'Количество бит на ячейку': item.bit_per_cell_amount,
             'Структура памяти': item.memory_structure,
-            'DRAM буфер': net_yest(item.DTAM_buffer),
+            'DRAM буфер': net_yest(item.DRAM_buffer),
             'Максимальная скорость последовательного чтения': str(item.max_cons_reading_speed) + 'Мбайт/сек',
             'Максимальная скорость последовательной записи': str(item.max_cons_writing_speed) + 'Мбайт/сек',
             'Максимальный ресурс записи (TBW)': str(item.max_writing_resource_TBW) + 'ТБ',
