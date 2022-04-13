@@ -272,3 +272,14 @@ class SSD(SqlAlchemyBase, SerializerMixin):
     price = sqlalchemy.Column(sqlalchemy.Integer)
     rating = sqlalchemy.Column(sqlalchemy.Integer)
     rates = sqlalchemy.Column(sqlalchemy.Integer)
+
+
+class Opinion(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'opinion'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    text = sqlalchemy.Column(sqlalchemy.String)
+    image = sqlalchemy.Column(sqlalchemy.String)
+    pr_type = sqlalchemy.Column(sqlalchemy.Integer)  # cpu gpu motherboard ramDIMM ramSODIMM ssd hdd
+    pr_title = sqlalchemy.Column(sqlalchemy.String)

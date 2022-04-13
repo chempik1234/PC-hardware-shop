@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="product">
+        <table width="100%">
+            <tr>
+                <td>
+                    <img src="/static/img/{{product_type}}/{{title}}.jpg">
+                </td>
+                <td>
+                    <h1>{{title}}</h1>
+                </td>
+            </tr>
+        </table>
+        <form action="" method="post" enctype="multipart/form-data" novalidate>
+            <div style="padding: 5px;"><input type="text" placeholder="Введите текст" name="text"></div>
+            <div style="padding: 5px;"><input type="file" name="file"></div>
+            <div style="padding: 5px;"><input type="submit" value="Отправить"></div>
+        </form>
+    </div>
+{% endblock %}

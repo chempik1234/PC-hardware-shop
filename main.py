@@ -1,7 +1,7 @@
 import flask
-from flask import Flask, render_template, url_for, redirect, request, abort, make_response
+from flask import Flask, flash, render_template, url_for, redirect, request, abort, make_response, send_from_directory
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, EmailField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, EmailField, FileField
 from wtforms.validators import DataRequired, EqualTo
 from random import randint
 import os
@@ -25,6 +25,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from sqlalchemy_serializer import *
 import requests
 from flask_restful import reqparse, abort, Api, Resource
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
 api = Api(app)
 db = SQLAlchemy(app)
@@ -42,10 +43,12 @@ api.add_resource(RAMSODIMMListResource, '/api/v2/ram_so_dimm')
 api.add_resource(RAMSODIMMResource, '/api/v2/ram_so_dimm/<int:_id>')
 api.add_resource(SSDListResource, '/api/v2/ssd')
 api.add_resource(SSDResource, '/api/v2/ssd/<int:_id>')
+UPLOAD_FOLDER = '\\static\\img\\opinion'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 login_manager = LoginManager()
 login_manager.init_app(app)
-levels = {}
 
 
 def msata_25(a):
@@ -363,10 +366,18 @@ def product(pr_type, title):
             'Оценка': round(item.rating / max(1, item.rates), 1),
             'rates': item.rates,
         }
+    opinions_db = db_sess.query(Opinion).filter(Opinion.pr_type == pr_type, Opinion.pr_title == title)
+    opinions = []
+    for i in opinions_db:
+        user = db_sess.query(User).get(i.user_id)
+        opinions.append([user.surname + ' ' + user.surname, i.text, i.image])
+    if not opinions:
+        opinions = None
     if not d:
         return abort(404)
     return render_template('product.html', style=style, title=title,
-                           item=d, product_type=pr_type, keys=d.keys())
+                           item=d, product_type=pr_type, keys=d.keys(),
+                           opinions=opinions)
 
 
 @app.route('/product/<pr_type>/<title>/<rate>')
@@ -383,6 +394,44 @@ def leave_rate(pr_type, title, rate):
     return redirect(f'/product/{pr_type}/{title}')
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/uploads/<name>')
+def download_file(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
+
+
+@app.route('/product/add_opinion/<pr_type>/<title>', methods=['GET', 'POST'])
+def add_opinion(pr_type, title):
+    if not current_user.is_authenticated:
+        return redirect('/login')
+    if db_sess.query(Opinion).filter(Opinion.pr_type == pr_type, Opinion.pr_title == title,
+                                     Opinion.user_id == current_user.id).first():
+        flash('Вы уже оставили отзыв')
+        return redirect('/product/' + pr_type + '/' + title)
+    url_style = url_for('static', filename='styles/style3.css')
+    if request.method == 'POST':
+        print(request.form, request.files)
+        op = Opinion()
+        op.user_id = current_user.id
+        op.text = request.form['text']
+        op.pr_type = pr_type
+        op.pr_title = title
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.abspath(os.getcwd()) + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            op.image = file.filename
+        db_sess.add(op)
+        db_sess.commit()
+        return redirect('/product/' + pr_type + '/' + title)
+    return render_template('opinion.html', style=url_style,
+                           title=title, product_type=pr_type)
+
+
 @app.route('/profile')
 def profile():
     style = url_for('static', filename='/styles/style3.css')
@@ -390,6 +439,12 @@ def profile():
         return render_template('profile.html', style=style, title="Профиль")
     else:
         return redirect('/login')
+
+
+class OpinionForm(FlaskForm):
+    text = StringField("Текст", validators=[DataRequired()])
+    images = FileField("Фото",)
+    submit = SubmitField('Отправить')
 
 
 class DBLoginForm(FlaskForm):
@@ -440,7 +495,7 @@ def product_buy(pr_type, title):
     return index()
 
 
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = DBLoginForm()
     url_style = url_for('static', filename='styles/style3.css')
