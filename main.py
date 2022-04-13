@@ -370,7 +370,7 @@ def product(pr_type, title):
     opinions = []
     for i in opinions_db:
         user = db_sess.query(User).get(i.user_id)
-        opinions.append([user.surname + ' ' + user.surname, i.text, i.image])
+        opinions.append([user.surname + ' ' + user.name, i.text, i.image])
     if not opinions:
         opinions = None
     if not d:
