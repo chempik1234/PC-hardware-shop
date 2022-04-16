@@ -81,6 +81,34 @@ td {
   border: 1px solid black;
 }
 
+.footer_ {
+  border-top: 2px solid white;
+  background-color: #33353D;
+}
+
+.footer-text {
+  color: white;
+}
+
+.text-150 {
+  font-size: 150%;
+}
+
+.footer-table-header {
+  font-size: 200%;
+  color: white;
+}
+
+.footer-links {
+  color: white;
+}
+
+.grid-container {
+  display: grid;
+  text-align: center;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 a:link { text-decoration: none; }
 
 a:visited { text-decoration: none; }
