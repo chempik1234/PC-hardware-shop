@@ -93,6 +93,8 @@ def net_da(a):
 
 
 def human_read_format(size):
+    if isinstance(size, str):
+        size = int(size)
     l, k = ['бит', 'Б', 'КБ', 'МБ', 'ГБ', 'ТБ'], 0
     if size > 8:
         size /= 8
