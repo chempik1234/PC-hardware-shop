@@ -122,7 +122,8 @@ def product_list(product_type):
              'motherboard': ('Материнские платы', Motherboard),
              'ram_dimm': ('Оперативная память DIMM', RAM_DIMM),
              'ram_so_dimm': ('Оперативная память SO-DIMM', RAM_SO_DIMM),
-             'ssd': ('SSD', SSD)}
+             'ssd': ('SSD', SSD),
+             'hdd35': ('HDD 3.5', HDD35)}
     if product_type not in types.keys():
         return abort(404)
     for item in db_sess.query(types[product_type][1]).all():
