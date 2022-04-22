@@ -51,13 +51,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def msata_25(a):
+def x_or_y_if_a(a, x, y):
     if a is None:
         return None
     elif not a:
-        return "2.5''"
+        return x
     else:
-        return "mSATA"
+        return y
 
 
 def byte(a):
@@ -140,7 +140,7 @@ def product(pr_type, title):
     style = url_for('static', filename='/styles/style3.css')
     tables = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
               'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM,
-              'ssd': SSD}
+              'ssd': SSD, 'hdd35': HDD35}
     item = db_sess.query(tables[pr_type]).filter(tables[pr_type].title == title).first()
     d = None
     if pr_type == 'cpu':
@@ -360,7 +360,27 @@ def product(pr_type, title):
             'DWPD': item.DWPD,
             'Аппаратное шифрование данных': net_yest(item.hardware_data_encryption),
             'Толщина (мм)': item.width,
-            'Форм-фактор': msata_25(item.form_factor),
+            'Форм-фактор': x_or_y_if_a(item.form_factor, 'mSATA', '2.5"'),
+            'Описание': item.description,
+            'Цена': item.price,
+            'Оценка': round(item.rating / max(1, item.rates), 1),
+            'rates': item.rates,
+        }
+    elif pr_type == 'hdd35':
+        d = {
+            'Гарантия': str(item.warranty) + ' мес.',
+            'Название': item.title,
+            'Объём памяти': human_read_format(item.memory_bits),
+            'Скорость вращения': str(item.rotation_speed) + ' об/мин',
+            'Объём кэш-памяти': human_read_format(item.cash_memory_bits),
+            'Оптимизация под RAID-массивы': net_yest(item.raid_massives_optimization),
+            'С гелиевым наполнением': net_yest(item.helium_fill),
+            'Уровень шума во время работы': str(item.noise_dba) + ' дБа',
+            'Технология записи': x_or_y_if_a(item.writing_tech_CMR_SMR, 'CMR', 'SMR'),
+            'Число циклов позиционирования-парковки': item.position_park_cycles_amount,
+            'Ширина': str(item.width) + ' мм',
+            'Длина': str(item.length) + ' мм',
+            'Высота': str(item.height) + ' мм',
             'Описание': item.description,
             'Цена': item.price,
             'Оценка': round(item.rating / max(1, item.rates), 1),
@@ -384,7 +404,7 @@ def product(pr_type, title):
 def leave_rate(pr_type, title, rate):
     types = {'cpu': CPU, 'gpu': GPU, 'motherboard': Motherboard,
              'ram_dimm': RAM_DIMM, 'ram_so_dimm': RAM_SO_DIMM,
-             'ssd': SSD}
+             'ssd': SSD, 'hdd35': HDD35}
     table = types[pr_type]
     item = db_sess.query(table).filter(table.title == title).first()
     if item:
