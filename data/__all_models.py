@@ -274,6 +274,31 @@ class SSD(SqlAlchemyBase, SerializerMixin):
     rates = sqlalchemy.Column(sqlalchemy.Integer)
 
 
+class HDD35(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'hdd35'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    warranty = sqlalchemy.Column(sqlalchemy.Integer)
+    country = sqlalchemy.Column(sqlalchemy.String)
+    title = sqlalchemy.Column(sqlalchemy.String)
+    year = sqlalchemy.Column(sqlalchemy.Integer)
+    memory_bits = sqlalchemy.Column(sqlalchemy.Integer)
+    rotation_speed = sqlalchemy.Column(sqlalchemy.Integer)
+    cash_memory_bits = sqlalchemy.Column(sqlalchemy.Integer)
+    raid_massives_optimization = sqlalchemy.Column(sqlalchemy.Boolean)
+    helium_fill = sqlalchemy.Column(sqlalchemy.Boolean)
+    noise_dba = sqlalchemy.Column(sqlalchemy.Integer)
+    writing_tech_CMR_SMR = sqlalchemy.Column(sqlalchemy.Boolean)  # cmr - 0, smr - 1
+    position_park_cycles_amount = sqlalchemy.Column(sqlalchemy.Integer)
+    width = sqlalchemy.Column(sqlalchemy.Integer)
+    length = sqlalchemy.Column(sqlalchemy.Integer)
+    height = sqlalchemy.Column(sqlalchemy.Integer)
+    description = sqlalchemy.Column(sqlalchemy.String)
+    price = sqlalchemy.Column(sqlalchemy.Integer)
+    rating = sqlalchemy.Column(sqlalchemy.Integer)
+    rates = sqlalchemy.Column(sqlalchemy.Integer)
+
+
 class Opinion(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'opinion'
     id = sqlalchemy.Column(sqlalchemy.Integer,

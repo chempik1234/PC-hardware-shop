@@ -1,5 +1,5 @@
 from data.__all_models import *
-class_ = SSD
+class_ = HDD35
 d = class_.__dict__
 print('''
 from data import db_session
@@ -26,5 +26,5 @@ for i in d.keys():
         print(i + '=args.get("' + i + '"),')
 for i in d.keys():
     if i != 'id' and i[0] != '_':
-        print(f'if ssd.{i}:')
-        print('\tdb_sess.query(SSD).filter(SSD.id == ssd.id).update(values={SSD.' + i + ': ssd.' + i + '})')
+        print(f'if hdd35.{i}:')
+        print('\tdb_sess.query(HDD35).filter(HDD35.id == hdd35.id).update(values={HDD35.' + i + ': hdd35.' + i + '})')
