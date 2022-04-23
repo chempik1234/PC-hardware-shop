@@ -331,7 +331,7 @@ def product(pr_type, title):
              'Тип': item.common_type,
              'Тип памяти': item.type_ddr,
              'Память одного модуля': human_read_format(item.one_module_memory),
-             'Суммарный объем памяти всего комплекта': human_read_format(GB(item.all_memory)),
+             'Суммарный объем памяти всего комплекта': human_read_format(item.all_memory),
              'Количество модулей в комплекте': item.modules_amount,
              'Частота': str(item.freq) + ' МГц',
              'CAS Latency (CL)': item.cas_latency_cl,
@@ -443,7 +443,12 @@ def add_opinion(pr_type, title):
         op.pr_title = title
         file = request.files['file']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            # filename = secure_filename(file.filename)
+            filename = '1.png'
+            quer = db_sess.query(Opinion).all()
+            if quer:
+                filename = str(max([i.id for i in quer])) + '.png'
+            file.filename = filename
             file.save(os.path.abspath(os.getcwd()) + os.path.join(app.config['UPLOAD_FOLDER'], filename))
             op.image = file.filename
         db_sess.add(op)
