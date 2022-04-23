@@ -43,7 +43,7 @@ api.add_resource(RAMSODIMMListResource, '/api/v2/ram_so_dimm')
 api.add_resource(RAMSODIMMResource, '/api/v2/ram_so_dimm/<int:_id>')
 api.add_resource(SSDListResource, '/api/v2/ssd')
 api.add_resource(SSDResource, '/api/v2/ssd/<int:_id>')
-UPLOAD_FOLDER = '\\static\\img\\opinion'
+UPLOAD_FOLDER = '/static/img/opinion'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -97,9 +97,11 @@ def human_read_format(size):
     if size > 8:
         size /= 8
         k += 1
+        print(size, k)
     while size >= 1024:
         k += 1
         size /= 1024
+        print(size, k)
     return str(round(size)) + l[k]
 
 
@@ -450,6 +452,7 @@ def add_opinion(pr_type, title):
                 filename = str(max([i.id for i in quer])) + '.png'
             file.filename = filename
             file.save(os.path.abspath(os.getcwd()) + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print(file.filename)
             op.image = file.filename
         db_sess.add(op)
         db_sess.commit()
